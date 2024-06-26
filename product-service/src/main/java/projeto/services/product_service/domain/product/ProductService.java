@@ -55,6 +55,6 @@ public class ProductService {
             return p.getPrice().multiply(new BigDecimal(quantity));
         }).reduce(BigDecimal::add).get();
 
-        return new MessageEventResponse<>("sucess",totalAmount);
+        return new MessageEventResponse<>("sucess",new QueueResponse(totalAmount.toEngineeringString(), orderMessageDTO.orderId()));
     }
 }
