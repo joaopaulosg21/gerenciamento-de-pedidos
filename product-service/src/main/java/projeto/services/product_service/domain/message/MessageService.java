@@ -29,6 +29,8 @@ public class MessageService {
 
             if(event.status().equalsIgnoreCase("sucess")) {
                 this.sendMessageToSucessQueue(event);
+            }else {
+                this.sendMessageToErrorQueue(event);
             }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -44,6 +46,16 @@ public class MessageService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void sendMessageToErrorQueue(MessageEventResponse<?> event) {
+        try {
+            var json = mapper.writeValueAsString(event);
+            amqpTemplate.convertAndSend("order-error-queue-exchange",
+                    "order-error-queue-key", json);
+            System.out.println("Mensagem enviada com sucesso para a queue de error");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
