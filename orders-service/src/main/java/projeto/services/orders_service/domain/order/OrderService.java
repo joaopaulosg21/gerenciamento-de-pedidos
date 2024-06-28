@@ -48,4 +48,9 @@ public class OrderService {
             repository.save(order);
         }
     }
+
+    public OrderDetailsDTO findById(UUID id) {
+        Order order = repository.findById(id).orElseThrow(RuntimeException::new);
+        return new OrderDetailsDTO(order);
+    }
 }
