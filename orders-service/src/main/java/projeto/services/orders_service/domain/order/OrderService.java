@@ -37,4 +37,15 @@ public class OrderService {
             repository.save(order);
         }
     }
+
+    public void updateErrorOrder(MessageEventResponse<QueueResponse> eventResponse) {
+        var id = UUID.fromString(eventResponse.response().orderId());
+        Optional<Order> optionalOrder = repository.findById(id);
+
+        if(optionalOrder.isPresent()){
+            Order order = optionalOrder.get();
+            order.setStatus(Status.CANCELED);
+            repository.save(order);
+        }
+    }
 }

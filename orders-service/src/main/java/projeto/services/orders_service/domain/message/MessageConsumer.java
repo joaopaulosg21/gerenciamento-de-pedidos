@@ -29,4 +29,16 @@ public class MessageConsumer {
             throw new RuntimeException(e);
         }
     }
+
+    @RabbitListener(queues = "order-error-queue")
+    public void getMessageFromErrorQueue(@Payload Message message) {
+        try {
+            MessageEventResponse<QueueResponse> messageResponse = mapper.readValue(message.getPayload().toString(),
+                    new TypeReference<>() {});
+            System.out.println(messageResponse);
+            service.updateErrorOrder(messageResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
